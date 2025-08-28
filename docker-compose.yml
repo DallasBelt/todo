@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: todo
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    restart: unless-stopped
+    ports:
+      - '8978:8978'
+    volumes:
+      - cbdata:/opt/cloudbeaver/workspace
+
+volumes:
+  pgdata:
+  cbdata:

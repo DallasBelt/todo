@@ -1,0 +1,21 @@
+meta {
+  name: delete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/api/tasks
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": "9203d69d-2875-4e65-b870-e8c64047d36f"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

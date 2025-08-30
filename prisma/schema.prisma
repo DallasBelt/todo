@@ -23,4 +23,5 @@ enum TaskStatus {
   PENDING
   ONGOING
   FINISHED
+  DELETED
 }

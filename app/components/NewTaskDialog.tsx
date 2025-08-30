@@ -23,11 +23,12 @@ export const NewTaskDialog = () => {
       <Button
         variant='outline'
         size={'icon'}
+        className='cursor-pointer w-full'
         onClick={() => {
           setCreateTaskDialog(true);
         }}
       >
-        <PlusIcon />
+        <PlusIcon /> Nueva tarea
       </Button>
 
       <Dialog open={createTaskDialog} onOpenChange={setCreateTaskDialog}>

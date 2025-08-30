@@ -45,7 +45,7 @@ export const NewTaskForm = () => {
             name='title'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Titulo</FormLabel>
+                <FormLabel>Título</FormLabel>
                 <FormControl>
                   <Input type='text' {...field} />
                 </FormControl>
@@ -59,7 +59,7 @@ export const NewTaskForm = () => {
             name='description'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Descripcion</FormLabel>
+                <FormLabel>Descripción</FormLabel>
                 <FormControl>
                   <Input type='text' {...field} />
                 </FormControl>

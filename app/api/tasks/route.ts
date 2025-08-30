@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // GET /api/tasks - Get all tasks
 export async function GET() {
   const tasks = await prisma.task.findMany({
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: 'asc' },
   });
   return NextResponse.json(tasks);
 }
@@ -17,7 +17,10 @@ export async function POST(req: Request) {
     const { title, description } = await req.json();
 
     if (!title) {
-      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Title is required.' },
+        { status: 400 }
+      );
     }
 
     const newTask = await prisma.task.create({
@@ -29,7 +32,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newTask, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Error creating task' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error creating task.' },
+      { status: 500 }
+    );
   }
 }
 
@@ -41,14 +47,14 @@ export async function PATCH(req: Request) {
     // Validate input
     if (!id)
       return NextResponse.json(
-        { error: 'Task ID is required' },
+        { error: 'Task ID is required.' },
         { status: 400 }
       );
 
     // Check if task exists
     const existingTask = await prisma.task.findUnique({ where: { id } });
     if (!existingTask)
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Task not found.' }, { status: 404 });
 
     // Prepare data to update
     const dataToUpdate: any = {};
@@ -62,7 +68,7 @@ export async function PATCH(req: Request) {
     // If no fields to update, return early
     if (Object.keys(dataToUpdate).length === 0) {
       return NextResponse.json(
-        { error: 'No changes detected' },
+        { error: 'No changes detected.' },
         { status: 400 }
       );
     }
@@ -75,34 +81,9 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json(updatedTask);
   } catch (error) {
-    return NextResponse.json({ error: 'Error updating task' }, { status: 500 });
-  }
-}
-
-// DELETE /api/tasks - Delete a task
-export async function DELETE(req: Request) {
-  try {
-    const { id } = await req.json();
-
-    // Validate input
-    if (!id) {
-      return NextResponse.json(
-        { error: 'Task ID is required' },
-        { status: 400 }
-      );
-    }
-
-    // Check if task exists
-    const existingTask = await prisma.task.findUnique({ where: { id } });
-    if (!existingTask) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-
-    // Delete the task
-    await prisma.task.delete({ where: { id } });
-
-    return NextResponse.json({ message: 'Task deleted successfully' });
-  } catch (error) {
-    return NextResponse.json({ error: 'Error deleting task' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error updating task.' },
+      { status: 500 }
+    );
   }
 }

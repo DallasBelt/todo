@@ -1,5 +1,8 @@
 export const getTasks = async () => {
-  const res = await fetch('/api/tasks');
+  const res = await fetch('/api/tasks', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   const data = await res.json();
 

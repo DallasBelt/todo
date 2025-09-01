@@ -1,12 +1,23 @@
 import { create } from 'zustand';
 
+type TaskStatus = 'PENDING' | 'ONGOING' | 'FINISHED';
+
+type Task = {
+  id: string | null;
+  title: string;
+  status: TaskStatus;
+  description?: string;
+};
+
 type Store = {
   createTaskDialog: boolean;
   setCreateTaskDialog: (state: boolean) => void;
   deleteTaskDialog: boolean;
   setDeleteTaskDialog: (state: boolean) => void;
-  taskId: string | null;
-  setTaskId: (id: string | null) => void;
+  task: Task;
+  setTask: (task: Partial<Task>) => void;
+  isEditingTask: boolean;
+  setIsEditingTask: (state: boolean) => void;
 };
 
 export const useTasksStore = create<Store>((set) => ({
@@ -14,6 +25,11 @@ export const useTasksStore = create<Store>((set) => ({
   setCreateTaskDialog: (state) => set({ createTaskDialog: state }),
   deleteTaskDialog: false,
   setDeleteTaskDialog: (state) => set({ deleteTaskDialog: state }),
-  taskId: null,
-  setTaskId: (id) => set({ taskId: id }),
+  task: { id: null, title: '', status: 'PENDING' },
+  setTask: (task) =>
+    set((state) => ({
+      task: { ...state.task, ...task },
+    })),
+  isEditingTask: false,
+  setIsEditingTask: (state) => set({ isEditingTask: state }),
 }));

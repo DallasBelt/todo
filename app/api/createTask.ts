@@ -1,14 +1,12 @@
 export const createTask = async (task: {
   title: string;
   description?: string;
+  status?: string;
 }) => {
   const res = await fetch('/api/tasks', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...task,
-      status: 'PENDING', // default status
-    }),
+    body: JSON.stringify(task),
   });
 
   const data = await res.json();

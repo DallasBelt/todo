@@ -9,14 +9,24 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 import { NewTaskForm } from './NewTaskForm';
 import { useTasksStore } from '@/app/useTasksStore';
+import { is } from 'zod/v4/locales';
 
-export const NewTaskDialog = () => {
-  const { createTaskDialog, setCreateTaskDialog } = useTasksStore();
+type NewTaskDialogProps = {
+  status: 'PENDING' | 'ONGOING' | 'FINISHED';
+};
+
+export const NewTaskDialog = ({ status }: NewTaskDialogProps) => {
+  const {
+    createTaskDialog,
+    setCreateTaskDialog,
+    setTask,
+    isEditingTask,
+    setIsEditingTask,
+  } = useTasksStore();
 
   return (
     <>
@@ -25,6 +35,8 @@ export const NewTaskDialog = () => {
         size={'icon'}
         className='cursor-pointer w-full'
         onClick={() => {
+          setTask({ status: status });
+          setIsEditingTask(false);
           setCreateTaskDialog(true);
         }}
       >
@@ -34,9 +46,13 @@ export const NewTaskDialog = () => {
       <Dialog open={createTaskDialog} onOpenChange={setCreateTaskDialog}>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Nueva tarea</DialogTitle>
+            <DialogTitle>
+              {isEditingTask ? 'Editar' : 'Nueva'} tarea
+            </DialogTitle>
             <DialogDescription>
-              Llene los datos de la nueva tarea.
+              {isEditingTask
+                ? 'Modifique los datos de la tarea.'
+                : 'Llene los datos de la nueva tarea.'}
             </DialogDescription>
           </DialogHeader>
           {/* Form */}

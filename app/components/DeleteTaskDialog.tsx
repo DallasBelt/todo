@@ -14,7 +14,7 @@ import { useTasksStore } from '@/app/useTasksStore';
 
 export const DeleteTaskDialog = () => {
   const { deleteTaskMutation } = useTasks();
-  const { deleteTaskDialog, setDeleteTaskDialog, taskId } = useTasksStore();
+  const { deleteTaskDialog, setDeleteTaskDialog, task } = useTasksStore();
 
   return (
     <AlertDialog open={deleteTaskDialog} onOpenChange={setDeleteTaskDialog}>
@@ -29,8 +29,8 @@ export const DeleteTaskDialog = () => {
           <AlertDialogCancel>No, regresar</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              if (taskId) {
-                deleteTaskMutation.mutate(taskId);
+              if (task.id) {
+                deleteTaskMutation.mutate(task.id);
               }
             }}
           >

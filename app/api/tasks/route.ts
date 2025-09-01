@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // GET /api/tasks - Get all tasks
 export async function GET() {
   const tasks = await prisma.task.findMany({
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: 'desc' },
   });
   return NextResponse.json(tasks);
 }
@@ -14,7 +14,7 @@ export async function GET() {
 // POST /api/tasks - Create a new task
 export async function POST(req: Request) {
   try {
-    const { title, description } = await req.json();
+    const { title, description, status } = await req.json();
 
     if (!title) {
       return NextResponse.json(
@@ -27,6 +27,7 @@ export async function POST(req: Request) {
       data: {
         title,
         description, // optional
+        status: status ?? 'PENDING', // default to 'PENDING' if not provided
       },
     });
 
@@ -34,55 +35,6 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: 'Error creating task.' },
-      { status: 500 }
-    );
-  }
-}
-
-// PATCH /api/tasks - Update an existing task
-export async function PATCH(req: Request) {
-  try {
-    const { id, title, description, status } = await req.json();
-
-    // Validate input
-    if (!id)
-      return NextResponse.json(
-        { error: 'Task ID is required.' },
-        { status: 400 }
-      );
-
-    // Check if task exists
-    const existingTask = await prisma.task.findUnique({ where: { id } });
-    if (!existingTask)
-      return NextResponse.json({ error: 'Task not found.' }, { status: 404 });
-
-    // Prepare data to update
-    const dataToUpdate: any = {};
-    if (title !== undefined && title !== existingTask.title)
-      dataToUpdate.title = title;
-    if (description !== undefined && description !== existingTask.description)
-      dataToUpdate.description = description;
-    if (status !== undefined && status !== existingTask.status)
-      dataToUpdate.status = status;
-
-    // If no fields to update, return early
-    if (Object.keys(dataToUpdate).length === 0) {
-      return NextResponse.json(
-        { error: 'No changes detected.' },
-        { status: 400 }
-      );
-    }
-
-    // Update the task
-    const updatedTask = await prisma.task.update({
-      where: { id },
-      data: dataToUpdate,
-    });
-
-    return NextResponse.json(updatedTask);
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Error updating task.' },
       { status: 500 }
     );
   }

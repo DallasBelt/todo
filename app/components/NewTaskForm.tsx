@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -18,23 +19,41 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { useTasks } from '../hooks/useTasks';
+import { useTasksStore } from '../useTasksStore';
 import { newTaskSchema } from '../newTaskSchema';
 
 export const NewTaskForm = () => {
+  const { createTaskMutation, updateTaskMutation } = useTasks();
+  const { task, isEditingTask } = useTasksStore();
+
   const form = useForm<z.infer<typeof newTaskSchema>>({
     resolver: zodResolver(newTaskSchema),
     defaultValues: {
-      title: '',
-      description: '',
+      title: isEditingTask ? task.title : '',
+      description: isEditingTask ? task.description : '',
     },
   });
 
   const onSubmit = (values: z.infer<typeof newTaskSchema>) => {
-    createTaskMutation.mutate(values);
-    form.reset();
-  };
+    if (isEditingTask) {
+      // Check if there are changes
+      if (
+        values.title === task.title &&
+        values.description === task.description
+      ) {
+        toast.info('No se detectaron cambios.');
+        return;
+      }
+      updateTaskMutation.mutate({ id: task.id!, task: values });
+    } else {
+      createTaskMutation.mutate({
+        ...values,
+        status: task.status,
+      });
+    }
 
-  const { createTaskMutation } = useTasks();
+    // form.reset({ title: '', description: '' });
+  };
 
   return (
     <Form {...form}>
@@ -73,9 +92,9 @@ export const NewTaskForm = () => {
           <Button
             type='submit'
             disabled={createTaskMutation.isPending}
-            className='w-full md:w-fit'
+            className='w-full md:w-fit cursor-pointer'
           >
-            Agregar
+            {isEditingTask ? 'Guardar' : 'Agregar'}
             {createTaskMutation.isPending && (
               <Loader2 className='me-2 animate-spin' />
             )}

@@ -4,13 +4,14 @@ import { toast } from 'sonner';
 import { getTasks } from '../api/getTasks';
 import { createTask } from '../api/createTask';
 import { deleteTask } from '../api/deleteTask';
+import { updateTask } from '../api/updateTask';
 
 import { useTasksStore } from '@/app/useTasksStore';
 
 export const useTasks = () => {
   const queryClient = useQueryClient();
 
-  const { setCreateTaskDialog } = useTasksStore();
+  const { setIsEditingTask, setCreateTaskDialog } = useTasksStore();
 
   const tasksQuery = useQuery({
     queryKey: ['tasks'],
@@ -30,26 +31,21 @@ export const useTasks = () => {
   });
 
   const updateTaskMutation = useMutation({
-    mutationFn: (task: {
+    mutationFn: ({
+      id,
+      task,
+    }: {
       id: string;
-      title: string;
-      description?: string;
-      status: string;
-    }) => {
-      return fetch(`/api/tasks/${task.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(task),
-      }).then((res) => {
-        if (!res.ok) {
-          throw new Error('Error al actualizar la tarea');
-        }
-        return res.json();
-      });
-    },
+      task: {
+        title: string;
+        description?: string;
+        status?: 'PENDING' | 'ONGOING' | 'FINISHED';
+      };
+    }) => updateTask(id, task),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('¡Tarea actualizada exitósamente!');
+      setCreateTaskDialog(false);
     },
     onError: (error) => {
       toast.error('Error al actualizar la tarea.', {
@@ -57,6 +53,46 @@ export const useTasks = () => {
       });
     },
   });
+
+  const markTaskPending = (task: {
+    id: string;
+    title: string;
+    description: string;
+  }) => {
+    updateTaskMutation.mutate({
+      id: task.id,
+      task: {
+        title: task.title,
+        description: task.description,
+        status: 'PENDING',
+      },
+    });
+  };
+
+  const markTaskOngoing = (task: {
+    id: string;
+    title: string;
+    description: string;
+  }) => {
+    updateTaskMutation.mutate({
+      id: task.id,
+      task: {
+        title: task.title,
+        description: task.description,
+        status: 'ONGOING',
+      },
+    });
+  };
+
+  const markTaskFinished = (task: { id: string; title: string }) => {
+    updateTaskMutation.mutate({
+      id: task.id,
+      task: {
+        title: task.title,
+        status: 'FINISHED',
+      },
+    });
+  };
 
   const deleteTaskMutation = useMutation({
     mutationFn: (id: string) => deleteTask(id),
@@ -74,6 +110,10 @@ export const useTasks = () => {
   return {
     tasksQuery,
     createTaskMutation,
+    updateTaskMutation,
+    markTaskPending,
+    markTaskOngoing,
+    markTaskFinished,
     deleteTaskMutation,
   };
 };

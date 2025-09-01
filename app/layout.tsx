@@ -31,7 +31,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>{children}</QueryProvider>
-        <Toaster />
+        <Toaster
+          richColors
+          toastOptions={{}}
+          expand={true}
+          visibleToasts={3}
+          theme={'light'}
+        />
       </body>
     </html>
   );

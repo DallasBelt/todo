@@ -53,7 +53,7 @@ export default function Tasks() {
               <h2 className='text-lg font-bold mb-2 text-center'>
                 {status.label}
               </h2>
-              <div className='min-h-[200px] grid gap-2 mb-8 auto-rows-fr'>
+              <div className='grid gap-2 auto-rows-fr'>
                 {/* Loading */}
                 {tasksQuery.isLoading && (
                   <div className='flex justify-center items-center py-8'>
@@ -64,7 +64,10 @@ export default function Tasks() {
                 {/* Tasks */}
                 {!tasksQuery.isLoading &&
                   filteredTasks.map((task: any) => (
-                    <Card key={task.id} className='mb-3 mx-2.5 group relative'>
+                    <Card
+                      key={task.id}
+                      className='min-h-[150px] mb-3 mx-2.5 group relative'
+                    >
                       <CardHeader>
                         <CardTitle>{task.title}</CardTitle>
                         <p className='text-gray-600 text-sm'>

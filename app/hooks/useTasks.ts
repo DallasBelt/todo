@@ -111,9 +111,9 @@ export const useTasks = () => {
     tasksQuery,
     createTaskMutation,
     updateTaskMutation,
+    deleteTaskMutation,
     markTaskPending,
     markTaskOngoing,
     markTaskFinished,
-    deleteTaskMutation,
   };
 };

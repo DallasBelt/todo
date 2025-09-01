@@ -51,7 +51,7 @@ export default function Tasks() {
           return (
             <div key={status.key} className='flex-1 min-w-[250px]'>
               <h2 className='text-lg font-bold mb-2 text-center'>
-                {status.label}
+                {status.label} ({filteredTasks.length})
               </h2>
               <div className='grid gap-2 auto-rows-fr'>
                 {/* Loading */}
@@ -75,6 +75,27 @@ export default function Tasks() {
                         </p>
                       </CardHeader>
                       <CardContent className='flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
+                        {/* Complete Button. Show only if task is pending or ongoing */}
+                        {task.status !== 'FINISHED' && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant='outline'
+                                size='icon'
+                                className='cursor-pointer'
+                                onClick={() => {
+                                  markTaskFinished(task);
+                                }}
+                              >
+                                <Check />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Finalizar</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+
                         {/* Pending Button. Show only if task is ongoing or finished */}
                         {task.status !== 'PENDING' && (
                           <Tooltip>
@@ -113,27 +134,6 @@ export default function Tasks() {
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Mover a 'En Proceso'</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-
-                        {/* Complete Button. Show only if task is pending or ongoing */}
-                        {task.status !== 'FINISHED' && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant='outline'
-                                size='icon'
-                                className='cursor-pointer'
-                                onClick={() => {
-                                  markTaskFinished(task);
-                                }}
-                              >
-                                <Check />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Finalizar</p>
                             </TooltipContent>
                           </Tooltip>
                         )}
